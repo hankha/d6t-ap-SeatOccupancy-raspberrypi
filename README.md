@@ -1,7 +1,5 @@
 # d6t-2jcieev01-raspberrypi
-It is a sample projects for D6T OMRON MEMS Thermal Sensors with
-evaluation kit **2JCIE-EV01-AR1**,
-**2JCIE-EV01-FT1** and some Arduino boards.
+It is a sample projects for seat occupancy sensing by D6T OMRON MEMS Thermal Sensors and Raspberry Pi.
 
 D6T sensor series are High Sensitivity Enables Detection
 of Stationary Human Presence,
@@ -13,15 +11,15 @@ of Stationary Human Presence,
 
 
 ## Description
-this Arduino sample projects for acquiring data from sensors on 2JCIE-EV01.
+this Raspberry Pi sample projects for acquiring data from D6T sensors via 2JCIE-EV01.
 sample projects output the sensor data to USB-Serial ports.
 
-| example | description                | board |
-|:-------:|:---------------------------|:--------------------|
-| d6t-1a  | for the element type 1x1   | Raspberry-Pi ZERO-W |
-| d6t-8l  | for the element type 1x8   | Raspberry-Pi ZERO-W |
-| d6t-44l | for the element type 4x4   | Raspberry-Pi ZERO-W |
-| d6t-32l | for the element type 32x32 | Raspberry-Pi ZERO-W |
+| example | description                | board | status of sample code for Seat Occupancy |
+|:-------:|:---------------------------|:--------------------|:-----------------------------------------|
+| d6t-1a  | for the element type 1x1   | Raspberry-Pi |:-----------------------------------------|
+| d6t-8l  | for the element type 1x8   | Raspberry-Pi |               Available                 |
+| d6t-44l | for the element type 4x4   | Raspberry-Pi |:-----------------------------------------|
+| d6t-32l | for the element type 32x32 | Raspberry-Pi |               Available                 |
 
 
 ## DEMO
