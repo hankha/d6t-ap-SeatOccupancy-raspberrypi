@@ -47,6 +47,75 @@ uint8_t rbuf[N_READ];
 #define RASPBERRY_PI_I2C    "/dev/i2c-1"
 #define I2CDEV              RASPBERRY_PI_I2C
 
+/***** Setting Parameter *****/
+#define comparingNumInc 6 // x250 ms   (example) 6 -> 1.5 sec
+#define comparingNumDec 6  // x250 ms   (example) 6 -> 1.5 sec
+#define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC
+#define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC
+bool  enablePix[8] = {true, true, true, true, true, true, true, true};
+/****************************/
+
+int16_t pix_data[8] = {0};
+int16_t seqData[8][40] = {0};
+bool  occuPix[8] = {0};
+bool  occuPixFlag = false;
+uint8_t  resultOccupancy = 0;
+uint16_t  totalCount = 0;
+
+/** JUDGE_occupancy: judge occupancy*/
+bool judge_seatOccupancy(void) { 
+  int i = 0;
+  int j = 0; 
+  for (i = 0; i < 8; i++){
+    for (j = 0; j < 39; j++){
+      seqData[i][39 - j] = seqData[i][38 - j];
+    }
+    seqData[i][0] = pix_data[i];            
+  }
+  if (totalCount <= comparingNumInc){
+    totalCount++;
+  }
+  if (totalCount > comparingNumInc){
+    for (i = 0; i < 8; i++){
+      if (enablePix[i] == true){
+        if (occuPix[i] == false){
+           if ((int16_t)(seqData[i][0] - seqData[i][comparingNumInc]) > (int16_t)threshHoldInc){
+            occuPix[i] = true;
+          }
+        }
+        else{   
+		  if ((int16_t)(seqData[i][comparingNumDec] - seqData[i][0]) > (int16_t)threshHoldDec){
+			occuPix[i] = false;
+          }
+        }
+      }
+    }
+    if (resultOccupancy == 0) {
+      for (i = 0; i < 8; i++){                   
+        if(occuPix[i] == true){
+          resultOccupancy = 1;
+          break;
+        }
+      }
+    }
+    else{  //resultOccupancy == true
+      occuPixFlag = false;
+      for (i = 0; i < 8; i++){
+        if (occuPix[i] == true){
+          occuPixFlag = true;
+          break;
+        }
+        else{                            
+        }
+      }
+      if (occuPixFlag == false){
+        resultOccupancy = 0;
+      }
+    }
+  }
+  return true;
+}
+
 
 /* I2C functions */
 /** <!-- i2c_read_reg8 {{{1 --> I2C read function for bytes transfer.
@@ -176,30 +245,36 @@ int main() {
     i2c_write_reg8(D6T_ADDR, dat5, sizeof(dat5));
     delay(500);
 
-    memset(rbuf, 0, N_READ);
-    uint32_t ret = i2c_read_reg8(D6T_ADDR, D6T_CMD, rbuf, N_READ);
-    if (ret) {
-        return ret;
-    }
+	while(1){ //add
+		memset(rbuf, 0, N_READ);
+		uint32_t ret = i2c_read_reg8(D6T_ADDR, D6T_CMD, rbuf, N_READ);
+		if (ret) {
+			return ret;
+		}
 
-    if (D6T_checkPEC(rbuf, N_READ - 1)) {
-        return 2;
-    }
+		if (D6T_checkPEC(rbuf, N_READ - 1)) {
+			return 2;
+		}
 
-    // 1st data is PTAT measurement (: Proportional To Absolute Temperature)
-    int16_t itemp = conv8us_s16_le(rbuf, 0);
-    printf("PTAT: %6.1f[degC]\n", itemp / 10.0);
+		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
+		int16_t itemp = conv8us_s16_le(rbuf, 0);
+		printf("PTAT: %6.1f[degC]", itemp / 10.0);     //change
 
-    // loop temperature pixels of each thrmopiles measurements
-    for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
-        itemp = conv8us_s16_le(rbuf, j);
-        printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
-        if ((i % N_ROW) == N_ROW - 1) {
-            printf(" [degC]\n");  // wrap text at ROW end.
-        } else {
-            printf(",");   // print delimiter
-        }
-    }
-    return 0;
+		// loop temperature pixels of each thrmopiles measurements
+		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
+			itemp = conv8us_s16_le(rbuf, j);
+			pix_data[i] = itemp; //add
+			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
+			if ((i % N_ROW) == N_ROW - 1) {
+				printf(" [degC]");  // wrap text at ROW end. //change
+			} else {
+				printf(",");   // print delimiter
+			}
+		}
+		judge_seatOccupancy(); //add
+		printf("Occupancy: %6.1f\n", resultOccupancy);  //add
+		delay(250);  //add
+		return 0;
+	}	//add
 }
 // vi: ft=c:fdm=marker:et:sw=4:tw=80
