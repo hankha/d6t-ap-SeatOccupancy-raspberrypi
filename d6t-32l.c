@@ -47,6 +47,108 @@ uint8_t rbuf[N_READ];
 #define RASPBERRY_PI_I2C    "/dev/i2c-1"
 #define I2CDEV              RASPBERRY_PI_I2C
 
+/***** Setting Parameter *****/
+#define comparingNumInc 6 // x250 ms   (example) 6 -> 1.5 sec
+#define comparingNumDec 6  // x250 ms   (example) 6 -> 1.5 sec
+#define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC
+#define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC
+bool  enablePix[1024] = {
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, 
+            true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true
+};
+/****************************/
+uint8_t rbuf[N_READ];
+int16_t pix_data[1024] = {0};
+int16_t seqData[1024][10] = {0};
+bool  occuPix[1024] = {0};
+bool  occuPixFlag = false;
+uint8_t  resultOccupancy = 0;
+uint16_t  totalCount = 0;
+uint16_t printCount = 0;
+
+/** JUDGE_occupancy: judge occupancy*/
+bool judge_seatOccupancy(void) { 
+  int i = 0;
+  int j = 0; 
+  for (i = 0; i < 1024; i++){
+    for (j = 0; j < 9; j++){
+      seqData[i][9 - j] = seqData[i][8 - j];
+    }
+    seqData[i][0] = pix_data[i];            
+  }
+  if (totalCount <= comparingNumInc){
+    totalCount++;
+  }
+  if (totalCount > comparingNumInc){
+    for (i = 0; i < 1024; i++){
+      if (enablePix[i] == true){
+        if (occuPix[i] == false){
+           if ((int16_t)(seqData[i][0] - seqData[i][comparingNumInc]) > (int16_t)threshHoldInc){
+            occuPix[i] = true;
+          }
+        }
+        else{   
+      if ((int16_t)(seqData[i][comparingNumDec] - seqData[i][0]) > (int16_t)threshHoldDec){
+      occuPix[i] = false;
+          }
+        }
+      }
+    }
+    if (resultOccupancy == 0) {
+      for (i = 0; i < 1024; i++){                   
+        if(occuPix[i] == true){
+          resultOccupancy = 1;
+          break;
+        }
+      }
+    }
+    else{  //resultOccupancy == true
+      occuPixFlag = false;
+      for (i = 0; i < 1024; i++){
+        if (occuPix[i] == true){
+          occuPixFlag = true;
+          break;
+        }
+        else{                            
+        }
+      }
+      if (occuPixFlag == false){
+        resultOccupancy = 0;
+      }
+    }
+  }
+  return true;
+}
 
 /* I2C functions */
 /** <!-- i2c_read_reg8 {{{1 --> I2C read function for bytes transfer.
@@ -136,41 +238,47 @@ void delay(int msec) {
  */
 int main() {
     int i, j;
+	while(1){ //add
+		memset(rbuf, 0, N_READ);
+		for (i = 0; i < 10; i++) {
+			uint32_t ret = i2c_read_reg8(D6T_ADDR, D6T_CMD, rbuf, N_READ);
+			if (ret == 0) {
+				break;
+			} else if (ret == 23) {  // write error
+				delay(60);
+			} else if (ret == 24) {  // read error
+				delay(3000);
+			}
+		}
+		if (i >= 10) {
+			fprintf(stderr, "Failed to read/write: %s\n", strerror(errno));
+			return 1;
+		}
 
-    memset(rbuf, 0, N_READ);
-    for (i = 0; i < 10; i++) {
-        uint32_t ret = i2c_read_reg8(D6T_ADDR, D6T_CMD, rbuf, N_READ);
-        if (ret == 0) {
-            break;
-        } else if (ret == 23) {  // write error
-            delay(60);
-        } else if (ret == 24) {  // read error
-            delay(3000);
-        }
-    }
-    if (i >= 10) {
-        fprintf(stderr, "Failed to read/write: %s\n", strerror(errno));
-        return 1;
-    }
+		if (D6T_checkPEC(rbuf, N_READ - 1)) {
+			return 2;
+		}
 
-    if (D6T_checkPEC(rbuf, N_READ - 1)) {
-        return 2;
-    }
+		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
+		int16_t itemp = conv8us_s16_le(rbuf, 0);
+		printf("PTAT: %6.1f[degC]", itemp / 10.0); //change
 
-    // 1st data is PTAT measurement (: Proportional To Absolute Temperature)
-    int16_t itemp = conv8us_s16_le(rbuf, 0);
-    printf("PTAT: %6.1f[degC]\n", itemp / 10.0);
-
-    // loop temperature pixels of each thrmopiles measurements
-    for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
-        itemp = conv8us_s16_le(rbuf, j);
-        printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
-        if ((i % N_ROW) == N_ROW - 1) {
-            printf(" [degC]\n");  // wrap text at ROW end.
-        } else {
-            printf(",");   // print delimiter
-        }
-    }
-    return 0;
+		// loop temperature pixels of each thrmopiles measurements
+		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
+			itemp = conv8us_s16_le(rbuf, j);
+			pix_data[i] = itemp; //add
+			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
+			if ((i % N_ROW) == N_ROW - 1) {
+				printf(" [degC]");  // wrap text at ROW end.  //change
+			} else {
+				printf(",");   // print delimiter
+			}
+		}
+		return 0;
+	}	//add
+	judge_seatOccupancy(); //add
+	printf("Occupancy: %6.1f\n", resultOccupancy);  //add
+	delay(200);  //add
+	return 0;	
 }
 // vi: ft=c:fdm=marker:et:sw=4:tw=80
