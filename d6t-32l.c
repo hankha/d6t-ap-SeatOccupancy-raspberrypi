@@ -164,21 +164,31 @@ uint32_t i2c_read_reg8(uint8_t devAddr, uint8_t regAddr,
     }
     int err = 0;
     do {
-        if (ioctl(fd, I2C_SLAVE, devAddr) < 0) {
-            fprintf(stderr, "Failed to select device: %s\n", strerror(errno));
-            err = 22; break;
-        }
-        if (write(fd, &regAddr, 1) != 1) {
-            err = 23; break;
-        }
-        int count = read(fd, data, length);
-        if (count < 0) {
-            err = 24; break;
-        } else if (count != length) {
-            fprintf(stderr, "Short read  from device, expected %d, got %d\n",
-                    length, count);
-            err = 25; break;
-        }
+        //if (ioctl(fd, I2C_SLAVE, devAddr) < 0) {
+        //    fprintf(stderr, "Failed to select device: %s\n", strerror(errno));
+        //    err = 22; break;
+        //}
+        //if (write(fd, &regAddr, 1) != 1) {
+        //    err = 23; break;
+        //}
+        //int count = read(fd, data, length);
+        //if (count < 0) {
+        //    err = 24; break;
+        //} else if (count != length) {
+        //    fprintf(stderr, "Short read  from device, expected %d, got %d\n",
+        //            length, count);
+        //    err = 25; break;
+        //}
+	
+  	struct i2c_msg messages[] = {
+      	{ devAddr, 0, 1, &regAddr },
+      	{ devAddr, I2C_M_RD, length, data },
+  	};
+  	struct i2c_rdwr_ioctl_data ioctl_data = { messages, 2 };
+ 	if (ioctl(fd, I2C_RDWR, &ioctl_data) != 2) {
+    	fprintf(stderr, "i2c_read: failed to ioctl: %s\n", strerror(errno));
+  	}
+	
     } while (false);
     close(fd); //change
     return err;
