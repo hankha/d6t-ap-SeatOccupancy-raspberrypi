@@ -157,7 +157,7 @@ uint32_t i2c_read_reg8(uint8_t devAddr, uint8_t regAddr,
                        uint8_t *data, int length
 ) {
     //int fd = open(I2CDEV, O_RDWR);
-　　int fd = 0; //change
+    int fd = 0; //change
     if (fd < 0) {
         fprintf(stderr, "Failed to open device: %s\n", strerror(errno));
         return 21;
