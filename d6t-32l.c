@@ -33,6 +33,7 @@
 #include <linux/i2c-dev.h>
 #include <stdbool.h>
 #include <time.h>
+#include <linux/i2c.h> //add
 
 /* defines */
 #define D6T_ADDR 0x0A  // for I2C 7bit address
