@@ -276,10 +276,10 @@ int main() {
 			}
 		}
 		//return 0;
-	}	//add
 	judge_seatOccupancy(); //add
 	printf("Occupancy: %d\n", resultOccupancy);  //add
 	delay(1000);  //add
-	//return 0;	
+	//return 0;
+	}	//add
 }
 // vi: ft=c:fdm=marker:et:sw=4:tw=80
