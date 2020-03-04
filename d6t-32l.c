@@ -252,11 +252,11 @@ int main() {
 		}
 		if (i >= 10) {
 			fprintf(stderr, "Failed to read/write: %s\n", strerror(errno));
-			return 1;
+		//	return 1;
 		}
 
 		if (D6T_checkPEC(rbuf, N_READ - 1)) {
-			return 2;
+		//	return 2;
 		}
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
@@ -265,6 +265,7 @@ int main() {
 
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
+		//for (i = 0, j = 2; i < 500; i++, j += 2) {
 			itemp = conv8us_s16_le(rbuf, j);
 			pix_data[i] = itemp; //add
 			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
@@ -274,11 +275,11 @@ int main() {
 				printf(",");   // print delimiter
 			}
 		}
-		return 0;
+		//return 0;
 	}	//add
 	judge_seatOccupancy(); //add
-	printf("Occupancy: %6.1f\n", resultOccupancy);  //add
-	delay(200);  //add
-	return 0;	
+	printf("Occupancy: %d\n", resultOccupancy);  //add
+	delay(1000);  //add
+	//return 0;	
 }
 // vi: ft=c:fdm=marker:et:sw=4:tw=80
