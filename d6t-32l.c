@@ -156,8 +156,8 @@ bool judge_seatOccupancy(void) {
 uint32_t i2c_read_reg8(uint8_t devAddr, uint8_t regAddr,
                        uint8_t *data, int length
 ) {
-    int fd = open(I2CDEV, O_RDWR);
-
+    //int fd = open(I2CDEV, O_RDWR);
+　　int fd = 0; //change
     if (fd < 0) {
         fprintf(stderr, "Failed to open device: %s\n", strerror(errno));
         return 21;
@@ -180,7 +180,7 @@ uint32_t i2c_read_reg8(uint8_t devAddr, uint8_t regAddr,
             err = 25; break;
         }
     } while (false);
-    close(fd);
+    //close(fd); //change
     return err;
 }
 
@@ -238,6 +238,7 @@ void delay(int msec) {
  */
 int main() {
     int i, j;
+    int fd = open(I2CDEV, O_RDWR);
 	while(1){ //add
 		memset(rbuf, 0, N_READ);
 		for (i = 0; i < 10; i++) {
@@ -265,7 +266,7 @@ int main() {
 
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
-		//for (i = 0, j = 2; i < 500; i++, j += 2) {
+		//for (i = 0, j = 2; i < 64; i++, j += 2) {
 			itemp = conv8us_s16_le(rbuf, j);
 			pix_data[i] = itemp; //add
 			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
