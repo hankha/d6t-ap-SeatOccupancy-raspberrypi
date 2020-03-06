@@ -338,7 +338,7 @@ int main() {
 		//return 0;
 		judge_seatOccupancy(); //add
 		printf("Occupancy: %d\n", resultOccupancy);  //add
-		delay(1000);  //add
+		delay(200);  //add
 		//return 0;
 	}	//add
 }
