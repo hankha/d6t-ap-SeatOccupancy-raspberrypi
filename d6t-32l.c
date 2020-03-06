@@ -320,7 +320,7 @@ int main() {
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
 		int16_t itemp = conv8us_s16_le(rbuf, 0);
-		printf("PTAT: %6.1f[degC]", itemp / 10.0); //change
+		printf("PTAT: %6.1f[degC], ", itemp / 10.0); //change
 
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
@@ -329,7 +329,7 @@ int main() {
 			pix_data[i] = itemp; //add
 			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
 			if ((i % N_ROW) == N_ROW - 1) {
-				printf(" [degC]");  // wrap text at ROW end.  //change
+				printf(",");  // wrap text at ROW end.  //change
 			}
 			else {
 				printf(",");   // print delimiter
@@ -337,7 +337,7 @@ int main() {
 		}
 		//return 0;
 		judge_seatOccupancy(); //add
-		printf("Occupancy: %d\n", resultOccupancy);  //add
+		printf(" Occupancy: %d\n", resultOccupancy);  //add
 		delay(200);  //add
 		//return 0;
 	}	//add
