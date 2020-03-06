@@ -118,7 +118,7 @@ bool judge_seatOccupancy(void) {
 		seqData[i][0] = pix_data[i];
 		/**** add *************/
 		for (k = 0; k < moveAveTimes; k++) {
-			sumData = sumData + seqData[i][k]
+			sumData = sumData + seqData[i][k];
 		}
 		if (sumData > 0) {
 			sumDataU = sumData;
@@ -128,7 +128,7 @@ bool judge_seatOccupancy(void) {
 			sumDataU = -sumData;
 			minusFlag = true;
 		}
-		tempData = (uint16_t)(((uint32_t)sumDataU) / ((uint 32_t)moveAveTimes));
+		tempData = (uint16_t)(((uint32_t)sumDataU) / ((uint32_t)moveAveTimes));
 		if (minusFlag == false) {
 			seqAveData[i][0] = (int16_t)tempData;
 		}
