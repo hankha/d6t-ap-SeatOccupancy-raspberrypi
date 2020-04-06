@@ -12,7 +12,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -324,16 +324,16 @@ void initialSetting(void) {
  */
 int main() {
     int i, j;
-
+	initialSetting();
 	while(1){ //add
 		memset(rbuf, 0, N_READ);
 		uint32_t ret = i2c_read_reg8(D6T_ADDR, D6T_CMD, rbuf, N_READ);
 		if (ret) {
-			return ret;
+			//return ret;
 		}
 
 		if (D6T_checkPEC(rbuf, N_READ - 1)) {
-			return 2;
+			//return 2;
 		}
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
@@ -352,9 +352,9 @@ int main() {
 			}
 		}
 		judge_seatOccupancy(); //add
-		printf("Occupancy: %6.1f\n", resultOccupancy);  //add
+		printf("Occupancy: %d\n", resultOccupancy);  //add
 		delay(samplingTime);  //add
-		return 0;
+		//return 0;
 	}	//add
 }
 // vi: ft=c:fdm=marker:et:sw=4:tw=80
