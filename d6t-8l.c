@@ -40,21 +40,54 @@
 
 #define N_ROW 8
 #define N_PIXEL 8
-
 #define N_READ ((N_PIXEL + 1) * 2 + 1)
-uint8_t rbuf[N_READ];
+
+#define SAMPLE_TIME_0050MS	50
+#define SAMPLE_TIME_0070MS	70
+#define SAMPLE_TIME_0140MS	140
+#define SAMPLE_TIME_0250MS	250
+#define SAMPLE_TIME_0500MS	500
+#define SAMPLE_TIME_1000MS	1000
+#define SAMPLE_TIME_2000MS	2000
+
+#define PARA_0050MS_1	((uint8_t)0x80)
+#define PARA_0050MS_2	((uint8_t)0x37)
+#define PARA_0050MS_3	((uint8_t)0xCC)
+#define PARA_0070MS_1	((uint8_t)0x80)
+#define PARA_0070MS_2	((uint8_t)0x38)
+#define PARA_0070MS_3	((uint8_t)0xE1)
+#define PARA_0140MS_1	((uint8_t)0x80)
+#define PARA_0140MS_2	((uint8_t)0x39)
+#define PARA_0140MS_3	((uint8_t)0xE6)
+#define PARA_0250MS_1	((uint8_t)0x80)
+#define PARA_0250MS_2	((uint8_t)0x3A)
+#define PARA_0250MS_3	((uint8_t)0xEF)
+#define PARA_0500MS_1	((uint8_t)0x80)
+#define PARA_0500MS_2	((uint8_t)0x3B)
+#define PARA_0500MS_3	((uint8_t)0xE8)
+#define PARA_1000MS_1	((uint8_t)0x80)
+#define PARA_1000MS_2	((uint8_t)0x3C)
+#define PARA_1000MS_3	((uint8_t)0xFD)
+#define PARA_2000MS_1	((uint8_t)0x80)
+#define PARA_2000MS_2	((uint8_t)0x3D)
+#define PARA_2000MS_3	((uint8_t)0xFA)
 
 #define RASPBERRY_PI_I2C    "/dev/i2c-1"
 #define I2CDEV              RASPBERRY_PI_I2C
 
 /***** Setting Parameter *****/
-#define comparingNumInc 6 // x250 ms   (example) 6 -> 1.5 sec
-#define comparingNumDec 6  // x250 ms   (example) 6 -> 1.5 sec
-#define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC
-#define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC
+#define comparingNumInc 6  // x samplingTime ms   (example) 6 x 250 ms -> 1.5 sec
+#define comparingNumDec 6  // x samplingTime ms   (example) 6 x 250 ms -> 1.5 sec
+#define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable) 
+#define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable) 
 bool  enablePix[8] = {true, true, true, true, true, true, true, true};
 /****************************/
 
+/***** Setting Parameter 2 *****/
+#define samplingTime SAMPLE_TIME_0250MS //ms (Can select only, 50ms, 70ms, 140ms, 250ms, 500ms, 1000ms, 2000ms)
+/****************************/
+
+uint8_t rbuf[N_READ];
 int16_t pix_data[8] = {0};
 int16_t seqData[8][40] = {0};
 bool  occuPix[8] = {0};
@@ -225,17 +258,55 @@ void delay(int msec) {
     nanosleep(&ts, NULL);
 }
 
+void initialSetting(void) {
 
-/** <!-- main - Thermal sensor {{{1 -->
- * 1. read sensor.
- * 2. output results, format is: [degC]
- */
-int main() {
-    int i, j;
-
-    uint8_t dat1[] = {0x02, 0x00, 0x01, 0xee};
+	uint8_t para[3] = {0};
+	switch(samplingTime){
+		case SAMPLE_TIME_0050MS:
+			para[0] = PARA_0050MS_1;
+			para[1] = PARA_0050MS_2;
+			para[2] = PARA_0050MS_3;
+			break;
+		case SAMPLE_TIME_0070MS:
+			para[0] = PARA_0070MS_1;
+			para[1] = PARA_0070MS_2;
+			para[2] = PARA_0070MS_3;
+			break;
+		case SAMPLE_TIME_0140MS:
+			para[0] = PARA_0140MS_1;
+			para[1] = PARA_0140MS_2;
+			para[2] = PARA_0140MS_3;
+			break;
+		case SAMPLE_TIME_0250MS:
+			para[0] = PARA_0250MS_1;
+			para[1] = PARA_0250MS_2;
+			para[2] = PARA_0250MS_3;
+			break;
+		case SAMPLE_TIME_0500MS:
+			para[0] = PARA_0500MS_1;
+			para[1] = PARA_0500MS_2;
+			para[2] = PARA_0500MS_3;
+			break;
+		case SAMPLE_TIME_1000MS:
+			para[0] = PARA_1000MS_1;
+			para[1] = PARA_1000MS_2;
+			para[2] = PARA_1000MS_3;
+			break;
+		case SAMPLE_TIME_2000MS:
+			para[0] = PARA_2000MS_1;
+			para[1] = PARA_2000MS_2;
+			para[2] = PARA_2000MS_3;
+			break;
+		default:
+			para[0] = PARA_0250MS_1;
+			para[1] = PARA_0250MS_2;
+			para[2] = PARA_0250MS_3;
+			break;
+	}
+	
+	uint8_t dat1[] = {0x02, 0x00, 0x01, 0xee};
     i2c_write_reg8(D6T_ADDR, dat1, sizeof(dat1));
-    uint8_t dat2[] = {0x05, 0x90, 0x3a, 0xb8};
+    uint8_t dat2[] = {0x05, para[0], para[1], para[2]};
     i2c_write_reg8(D6T_ADDR, dat2, sizeof(dat2));
     uint8_t dat3[] = {0x03, 0x00, 0x03, 0x8b};
     i2c_write_reg8(D6T_ADDR, dat3, sizeof(dat3));
@@ -243,7 +314,16 @@ int main() {
     i2c_write_reg8(D6T_ADDR, dat4, sizeof(dat4));
     uint8_t dat5[] = {0x02, 0x00, 0x00, 0xe9};
     i2c_write_reg8(D6T_ADDR, dat5, sizeof(dat5));
-    delay(500);
+    delay(2*samplingTime);
+
+}
+
+/** <!-- main - Thermal sensor {{{1 -->
+ * 1. read sensor.
+ * 2. output results, format is: [degC]
+ */
+int main() {
+    int i, j;
 
 	while(1){ //add
 		memset(rbuf, 0, N_READ);
@@ -273,7 +353,7 @@ int main() {
 		}
 		judge_seatOccupancy(); //add
 		printf("Occupancy: %6.1f\n", resultOccupancy);  //add
-		delay(250);  //add
+		delay(samplingTime);  //add
 		return 0;
 	}	//add
 }
