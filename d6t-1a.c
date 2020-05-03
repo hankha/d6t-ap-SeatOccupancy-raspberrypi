@@ -100,15 +100,15 @@
 #define I2CDEV              RASPBERRY_PI_I2C
 
 /***** Setting Parameter 1 *****/
-#define comparingNumInc 8 // x samplingTime ms   (example) 8 x 200 ms -> 1.6 sec
-#define comparingNumDec 8  // x samplingTime ms   (example) 8 x 200 ms -> 1.6 sec
+#define comparingNumInc 16 // x samplingTime ms   (example) 16 x 100 ms -> 1.6 sec
+#define comparingNumDec 16  // x samplingTime ms   (example) 16 x 100 ms -> 1.6 sec
 #define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable)  
 #define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Disable)
 //bool  enablePix[8] = {true, true, true, true, true, true, true, true};
 /****************************/
 
 /***** Setting Parameter 2 *****/
-#define samplingTime SAMPLE_TIME_0200MS //ms (Can select only, 9ms, 10ms, 12ms, 15ms, 20ms, 40ms, 60ms, 100ms, 200ms, 400ms, 800ms, 1600ms, 3200ms)
+#define samplingTime SAMPLE_TIME_0100MS //ms (Can select only, 9ms, 10ms, 12ms, 15ms, 20ms, 40ms, 60ms, 100ms, 200ms, 400ms, 800ms, 1600ms, 3200ms)
 /****************************/
 
 uint8_t rbuf[N_READ];
@@ -336,9 +336,9 @@ void initialSetting(void) {
 			para[2] = PARA_3200MS_3;
 			break;
 		default:
-			para[0] = PARA_0040MS_1;
-			para[1] = PARA_0040MS_2;
-			para[2] = PARA_0040MS_3;
+			para[0] = PARA_0100MS_1;
+			para[1] = PARA_0100MS_2;
+			para[2] = PARA_0100MS_3;
 			break;
 	}
 	
