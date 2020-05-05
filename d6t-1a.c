@@ -100,8 +100,8 @@
 #define I2CDEV              RASPBERRY_PI_I2C
 
 /***** Setting Parameter 1 *****/
-#define comparingNumInc 16 // x samplingTime ms   (example) 16 x 100 ms -> 1.6 sec
-#define comparingNumDec 16  // x samplingTime ms   (example) 16 x 100 ms -> 1.6 sec
+#define comparingNumInc 16 // x samplingTime ms (range: 1 to 39)  (example) 16 x 100 ms -> 1.6 sec
+#define comparingNumDec 16  // x samplingTime ms  (range: 1 to 39) (example) 16 x 100 ms -> 1.6 sec
 #define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable)  
 #define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Disable)
 //bool  enablePix[8] = {true, true, true, true, true, true, true, true};
@@ -376,12 +376,12 @@ int main() {
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
 		int16_t itemp = conv8us_s16_le(rbuf, 0);
-		printf("PTAT: %6.1f[degC]\n", itemp / 10.0);
+		printf("PTAT: %4.1f [degC], Temperature: ", itemp / 10.0);
 	
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
 			itemp = conv8us_s16_le(rbuf, j);
-			pix_data[i] = itemp; //add
+			pix_data = itemp; //add
 			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
 			if ((i % N_ROW) == N_ROW - 1) {
 				printf(" [degC]");  // wrap text at ROW end.
@@ -390,7 +390,7 @@ int main() {
 			}
 		}
 		judge_seatOccupancy(); //add
-		printf("Occupancy: %d\n", resultOccupancy);  //add
+		printf(", Occupancy: %d\n", resultOccupancy);  //add
 		delay(samplingTime);  //add
 		//return 0;
 	}
