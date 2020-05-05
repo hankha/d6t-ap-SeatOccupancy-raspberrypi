@@ -33,6 +33,7 @@
 #include <linux/i2c-dev.h>
 #include <stdbool.h>
 #include <time.h>
+#include <linux/i2c.h> //add
 
 /* defines */
 #define D6T_ADDR 0x0A  // for I2C 7bit address
@@ -109,8 +110,8 @@
 #define PARA_1370MS	((uint8_t)0x20)
 
 /***** Setting Parameter *****/
-#define comparingNumInc 5 // x300 ms   (example) 5 -> 1.5 sec
-#define comparingNumDec 5  // x300 ms   (example) 5 -> 1.5 sec
+#define comparingNumInc 5 // x300 ms  (range: 1 to 39) (example) 5 -> 1.5 sec
+#define comparingNumDec 5  // x300 ms (range: 1 to 39)  (example) 5 -> 1.5 sec
 #define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC
 #define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC
 bool  enablePix[16] = {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true};
@@ -185,6 +186,12 @@ bool judge_seatOccupancy(void) {
   return true;
 }
 
+void delay(int msec) {
+    struct timespec ts = {.tv_sec = msec / 1000,
+                          .tv_nsec = (msec % 1000) * 1000000};
+    nanosleep(&ts, NULL);
+}
+
 /* I2C functions */
 /** <!-- i2c_read_reg8 {{{1 --> I2C read function for bytes transfer.
  */
@@ -206,6 +213,7 @@ uint32_t i2c_read_reg8(uint8_t devAddr, uint8_t regAddr,
         if (write(fd, &regAddr, 1) != 1) {
             err = 23; break;
         }
+	delay(1); //add
         int count = read(fd, data, length);
         if (count < 0) {
             err = 24; break;
@@ -284,11 +292,7 @@ int16_t conv8us_s16_le(uint8_t* buf, int n) {
 }
 
 
-void delay(int msec) {
-    struct timespec ts = {.tv_sec = msec / 1000,
-                          .tv_nsec = (msec % 1000) * 1000000};
-    nanosleep(&ts, NULL);
-}
+
 
 void initialSetting(void) {
 	uint8_t para = 0;
@@ -429,7 +433,7 @@ int main() {
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
 		int16_t itemp = conv8us_s16_le(rbuf, 0);
-		printf("PTAT: %6.1f[degC]\n", itemp / 10.0);
+		printf("PTAT: %4.1f [degC], Temperature: ", itemp / 10.0);
 	
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
@@ -437,13 +441,13 @@ int main() {
 			pix_data[i] = itemp; //add
 			printf("%4.1f", itemp / 10.0);  // print PTAT & Temperature
 			if ((i % N_ROW) == N_ROW - 1) {
-				printf(" [degC]");  // wrap text at ROW end.
+				printf(", ");  // wrap text at ROW end.
 			} else {
-				printf(",");   // print delimiter
+				printf(", ");   // print delimiter
 			}
 		}
 		judge_seatOccupancy(); //add
-		printf("Occupancy: %d\n", resultOccupancy);  //add
+		printf("[degC], Occupancy: %d\n", resultOccupancy);  //add
 		delay(samplingTime);  //add
 		//return 0;
 	}
