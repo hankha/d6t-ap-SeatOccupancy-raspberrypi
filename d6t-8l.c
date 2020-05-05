@@ -89,26 +89,26 @@
 #define PARA_2000MS_1	((uint8_t)0x90)
 #define PARA_2000MS_2	((uint8_t)0x3D)
 #define PARA_2000MS_3	((uint8_t)0xAD)
-#define PARA_2000MS_1	((uint8_t)0x90)
-#define PARA_2000MS_2	((uint8_t)0x3E)
-#define PARA_2000MS_3	((uint8_t)0xA4)
-#define PARA_2000MS_1	((uint8_t)0x90)
-#define PARA_2000MS_2	((uint8_t)0x3F)
-#define PARA_2000MS_3	((uint8_t)0xA3)
+#define PARA_4000MS_1	((uint8_t)0x90)
+#define PARA_4000MS_2	((uint8_t)0x3E)
+#define PARA_4000MS_3	((uint8_t)0xA4)
+#define PARA_8000MS_1	((uint8_t)0x90)
+#define PARA_8000MS_2	((uint8_t)0x3F)
+#define PARA_8000MS_3	((uint8_t)0xA3)
 
 #define RASPBERRY_PI_I2C    "/dev/i2c-1"
 #define I2CDEV              RASPBERRY_PI_I2C
 
 /***** Setting Parameter *****/
-#define comparingNumInc 6  // x samplingTime ms   (example) 6 x 250 ms -> 1.5 sec
-#define comparingNumDec 6  // x samplingTime ms   (example) 6 x 250 ms -> 1.5 sec
+#define comparingNumInc 6  // x samplingTime ms (range: 1 to 39)  (example) 6 x 250 ms -> 1.5 sec
+#define comparingNumDec 6  // x samplingTime ms (range: 1 to 39) (example) 6 x 250 ms -> 1.5 sec
 #define threshHoldInc 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable) 
 #define threshHoldDec 10 //  /10 degC   (example) 10 -> 1.0 degC (temperature change > 1.0 degC -> Enable) 
 bool  enablePix[8] = {true, true, true, true, true, true, true, true};
 /****************************/
 
 /***** Setting Parameter 2 *****/
-#define samplingTime SAMPLE_TIME_0250MS //ms (Can select only, 50ms, 70ms, 140ms, 250ms, 500ms, 1000ms, 2000ms)
+#define samplingTime SAMPLE_TIME_0250MS //ms (Can select only, 10ms, 12ms, 16ms, 25ms, 50ms, 70ms, 140ms, 250ms, 500ms, 1000ms, 2000ms, 4000ms, 8000ms)
 /****************************/
 
 uint8_t rbuf[N_READ];
@@ -391,7 +391,7 @@ int main() {
 
 		// 1st data is PTAT measurement (: Proportional To Absolute Temperature)
 		int16_t itemp = conv8us_s16_le(rbuf, 0);
-		printf("PTAT: %6.1f[degC]", itemp / 10.0);     //change
+		printf("PTAT: %4.1f [degC], Temperature: ", itemp / 10.0);     //change
 
 		// loop temperature pixels of each thrmopiles measurements
 		for (i = 0, j = 2; i < N_PIXEL; i++, j += 2) {
@@ -401,11 +401,11 @@ int main() {
 			if ((i % N_ROW) == N_ROW - 1) {
 				printf(" [degC]");  // wrap text at ROW end. //change
 			} else {
-				printf(",");   // print delimiter
+				printf(", ");   // print delimiter
 			}
 		}
 		judge_seatOccupancy(); //add
-		printf("Occupancy: %d\n", resultOccupancy);  //add
+		printf(", Occupancy: %d\n", resultOccupancy);  //add
 		delay(samplingTime);  //add
 		//return 0;
 	}	//add
