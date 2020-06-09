@@ -51,8 +51,8 @@ uint8_t rbuf[N_READ];
 /***** Setting Parameter *****/
 #define comparingNumInc 8 // x200 ms   (example) 8 -> 1.6 sec
 #define comparingNumDec 8  // x200 ms   (example) 8 -> 1.6 sec
-#define threshHoldInc 18 //  /10 degC   (example) 18 -> 1.8 degC
-#define threshHoldDec 12 //  /12 degC   (example) 10 -> 1.2 degC
+#define threshHoldInc 19 //  /10 degC   (example) 19 -> 1.9 degC
+#define threshHoldDec 13 //  /10 degC   (example) 13 -> 1.3 degC
 #define moveAveTimes 4 //   Max 10 (example) 4
 #define personPix 10 //   (example) 10
 bool  enablePix[1024] = {
@@ -142,12 +142,12 @@ bool judge_seatOccupancy(void) {
 		for (i = 0; i < 1024; i++) {
 			if (enablePix[i] == true) {
 				if (occuPix[i] == false) {
-					if ((int16_t)(seqAveData[i][0] - seqAveData[i][comparingNumInc]) > (int16_t)threshHoldInc) { // change to seqAveData
+					if ((int16_t)(seqAveData[i][0] - seqAveData[i][comparingNumInc]) >= (int16_t)threshHoldInc) { // change to seqAveData
 						occuPix[i] = true;
 					}
 				}
 				else {
-					if ((int16_t)(seqAveData[i][comparingNumDec] - seqAveData[i][0]) > (int16_t)threshHoldDec) { // change to seqAveData
+					if ((int16_t)(seqAveData[i][comparingNumDec] - seqAveData[i][0]) >= (int16_t)threshHoldDec) { // change to seqAveData
 						occuPix[i] = false;
 					}
 				}
