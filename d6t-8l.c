@@ -136,12 +136,12 @@ bool judge_seatOccupancy(void) {
     for (i = 0; i < 8; i++){
       if (enablePix[i] == true){
         if (occuPix[i] == false){
-           if ((int16_t)(seqData[i][0] - seqData[i][comparingNumInc]) > (int16_t)threshHoldInc){
+           if ((int16_t)(seqData[i][0] - seqData[i][comparingNumInc]) >= (int16_t)threshHoldInc){
             occuPix[i] = true;
           }
         }
         else{   
-		  if ((int16_t)(seqData[i][comparingNumDec] - seqData[i][0]) > (int16_t)threshHoldDec){
+		  if ((int16_t)(seqData[i][comparingNumDec] - seqData[i][0]) >= (int16_t)threshHoldDec){
 			occuPix[i] = false;
           }
         }
