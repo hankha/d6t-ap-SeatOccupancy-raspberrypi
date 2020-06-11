@@ -16,9 +16,9 @@ sample projects output the sensor data to USB-Serial ports.
 
 | example | description                | board | status of sample code for Seat Occupancy |
 |:-------:|:---------------------------|:--------------------|:-----------------------------------------|
-| d6t-1a  | for the element type 1x1   | Raspberry-Pi |:-----------------------------------------|
+| d6t-1a  | for the element type 1x1   | Raspberry-Pi |               Available                 |
 | d6t-8l  | for the element type 1x8   | Raspberry-Pi |               Available                 |
-| d6t-44l | for the element type 4x4   | Raspberry-Pi |:-----------------------------------------|
+| d6t-44l | for the element type 4x4   | Raspberry-Pi |               Available                 |
 | d6t-32l | for the element type 32x32 | Raspberry-Pi |               Available                 |
 
 
